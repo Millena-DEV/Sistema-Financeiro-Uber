@@ -1,0 +1,137 @@
+﻿<section class="financeiro">
+  <header class="header">
+    <div>
+      <h1>Resumo Financeiro</h1>
+      <p>Monitore lucro real e gastos com gasolina por período.</p>
+    </div>
+    <div class="filtros">
+      <label>
+        Início
+        <input type="date" [(ngModel)]="inicio" />
+      </label>
+      <label>
+        Fim
+        <input type="date" [(ngModel)]="fim" />
+      </label>
+      <button type="button" (click)="carregarDados()">Atualizar</button>
+    </div>
+  </header>
+
+  <section class="formulario">
+    <div class="form-header">
+      <h2>Novo Registro</h2>
+      <p>Preencha os dados do dia para alimentar os gráficos.</p>
+    </div>
+
+    <div class="form-grid">
+      <label>
+        Data
+        <input type="date" [(ngModel)]="novoRegistro.data" />
+      </label>
+      <label>
+        KM Rodado
+        <input type="number" step="0.01" [(ngModel)]="novoRegistro.kmRodado" />
+      </label>
+      <label>
+        Ganhos Brutos (R$)
+        <input type="number" step="0.01" [(ngModel)]="novoRegistro.ganhosBrutos" />
+      </label>
+      <label>
+        Preço Gasolina (R$)
+        <input type="number" step="0.01" [(ngModel)]="novoRegistro.precoGasolina" />
+      </label>
+      <label>
+        Litros Abastecidos
+        <input type="number" step="0.01" [(ngModel)]="novoRegistro.litrosAbastecidos" />
+      </label>
+      <label>
+        Horas Trabalhadas (opcional)
+        <input type="number" step="0.01" [(ngModel)]="novoRegistro.horasTrabalhadas" />
+      </label>
+    </div>
+
+    <div class="form-actions">
+      <button type="button" (click)="salvarRegistro()">Salvar registro</button>
+      <span class="success" *ngIf="sucesso">{{ sucesso }}</span>
+    </div>
+  </section>
+
+  <div *ngIf="erro" class="erro">{{ erro }}</div>
+  <div *ngIf="carregando" class="loading">Carregando dados...</div>
+
+  <div *ngIf="resumo" class="cards">
+    <div class="card destaque">
+      <span>Lucro Líquido</span>
+      <strong>{{ resumo.lucroLiquidoTotal | currency:'BRL':'symbol':'1.2-2' }}</strong>
+      <small>Gastos reais com gasolina já descontados</small>
+    </div>
+    <div class="card">
+      <span>Gasto Gasolina</span>
+      <strong>{{ resumo.gastoGasolinaTotal | currency:'BRL':'symbol':'1.2-2' }}</strong>
+      <small>Baseado no preço e litros informados</small>
+    </div>
+    <div class="card">
+      <span>KM Rodado</span>
+      <strong>{{ resumo.kmTotal | number: '1.0-0' }} km</strong>
+      <small>Custo/km: {{ resumo.custoPorKm | currency:'BRL':'symbol':'1.2-2' }}</small>
+    </div>
+    <div class="card">
+      <span>Lucro por KM</span>
+      <strong>{{ resumo.lucroPorKm | currency:'BRL':'symbol':'1.2-2' }}</strong>
+      <small>Eficiência do período</small>
+    </div>
+    <div class="card">
+      <span>Ganho por Hora</span>
+      <strong>{{ resumo.ganhoPorHora | currency:'BRL':'symbol':'1.2-2' }}</strong>
+      <small>Total horas: {{ resumo.horasTrabalhadasTotal | number: '1.0-0' }}</small>
+    </div>
+  </div>
+
+  <div class="graficos" *ngIf="registros.length">
+    <div class="grafico">
+      <div echarts [options]="lucroOptions" class="chart"></div>
+    </div>
+    <div class="grafico">
+      <div echarts [options]="kmOptions" class="chart"></div>
+    </div>
+  </div>
+
+  <section class="tabela" *ngIf="registros.length">
+    <div class="table-header">
+      <h3>Registros do período</h3>
+      <span>{{ registros.length }} itens</span>
+    </div>
+    <div class="table-wrapper">
+      <table>
+        <thead>
+          <tr>
+            <th>Data</th>
+            <th>KM</th>
+            <th>Ganhos</th>
+            <th>Gasolina</th>
+            <th>Lucro</th>
+            <th>Custo/KM</th>
+            <th>Lucro/KM</th>
+            <th>Ganho/Hora</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let registro of registros">
+            <td>{{ registro.data }}</td>
+            <td>{{ registro.kmRodado | number: '1.0-0' }}</td>
+            <td>{{ registro.ganhosBrutos | currency:'BRL':'symbol':'1.2-2' }}</td>
+            <td>{{ registro.gastoGasolina | currency:'BRL':'symbol':'1.2-2' }}</td>
+            <td>{{ registro.lucroLiquido | currency:'BRL':'symbol':'1.2-2' }}</td>
+            <td>{{ registro.custoPorKm | currency:'BRL':'symbol':'1.2-2' }}</td>
+            <td>{{ registro.lucroPorKm | currency:'BRL':'symbol':'1.2-2' }}</td>
+            <td>{{ registro.ganhoPorHora | currency:'BRL':'symbol':'1.2-2' }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <div class="empty" *ngIf="!registros.length && !carregando">
+    Nenhum registro no período. Cadastre um novo registro acima.
+  </div>
+</section>

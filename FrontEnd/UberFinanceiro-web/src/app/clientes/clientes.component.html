@@ -1,0 +1,32 @@
+<div class="cadastro-wrapper">
+  <mat-card class="cadastro-card">
+    <mat-card-header>
+      <mat-card-title>Cadastro de Cliente</mat-card-title>
+      <mat-card-subtitle>Preencha os campos para criar sua conta</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <mat-form-field appearance="outline">
+        <mat-label>Nome</mat-label>
+        <input matInput [(ngModel)]="nome" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" [(ngModel)]="email" />
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Senha</mat-label>
+        <input matInput type="password" [(ngModel)]="senha" />
+      </mat-form-field>
+
+      <button mat-raised-button color="primary" class="full-width" (click)="cadastrar()">
+        Cadastrar
+      </button>
+
+      <p class="success" *ngIf="successMessage">{{ successMessage }}</p>
+      <p class="error" *ngIf="errorMessage">{{ errorMessage }}</p>
+    </mat-card-content>
+  </mat-card>
+</div>
